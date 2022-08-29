@@ -1,58 +1,47 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 
 import CardList from "./components/card-list/card-list.component";
 import SearchBox from "./components/search-box/search-box.component.jsx";
 import "./App.css";
 
-class App extends Component {
-  constructor() {
-    super();
+const App = () => {
+  const [searchField, setSearchField] = useState("");
+  const [persons, setPersons] = useState([]);
+  const [filteredPersons, setFilteredPersons] = useState(persons);
 
-    this.state = {
-      persons: [],
-      searchField: "",
-    };
-  }
-
-  componentDidMount() {
+  //initial data api
+  useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
-      .then((users) =>
-        this.setState(
-          () => {
-            return { persons: users };
-          },
-          () => {
-            console.log(this.state);
-          }
-        )
-      );
-  }
+      .then((users) => setPersons(users));
+  }, []);
 
-  onSearchChange = (event) => {
-    const searchField = event.target.value.toLocaleLowerCase();
-
-    this.setState(() => {
-      return { searchField };
-    });
-  };
-
-  render() {
-    const { persons, searchField } = this.state;
-    const { onSearchChange } = this;
-
-    const filteredPersons = persons.filter((person) => {
+  //initial data api
+  useEffect(() => {
+    //filter the person to search
+    const newFilteredPersons = persons.filter((person) => {
       return person.name.toLocaleLowerCase().includes(searchField);
     });
+    setFilteredPersons(newFilteredPersons)
+  }, [persons, searchField]);
 
-    return (
-      <div className="App">
-        <h1 className="app-title">Restor Family</h1>
-        <SearchBox onChangeHandler={onSearchChange} placeholder='Search Persons' className='persons-search-box'/>
-        <CardList persons={filteredPersons} />
-      </div>
-    );
-  }
-}
+  //If input is changed this will trigger
+  const onSearchChange = (event) => {
+    const searchFieldString = event.target.value.toLocaleLowerCase();
+    setSearchField(searchFieldString);
+  };
+
+  return (
+    <div className="App">
+      <h1 className="app-title">Restor Family</h1>
+      <SearchBox
+        onChangeHandler={onSearchChange}
+        placeholder="Search Persons"
+        className="persons-search-box"
+      />
+      <CardList persons={filteredPersons} />
+    </div>
+  );
+};
 
 export default App;
