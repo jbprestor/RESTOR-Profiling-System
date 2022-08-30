@@ -1,46 +1,33 @@
-import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 
-import CardList from "./components/card-list/card-list.component";
-import SearchBox from "./components/search-box/search-box.component.jsx";
-import "./App.css";
+import "./App.scss";
+import Home from "./components/routes/home/home.component";
+import Navigation from "./components/routes/navigation/navigation.component";
+import SignIn from "./components/routes/sign-in/sign-in.components";
+/* const SideBar = () => {
+  return (
+    <div>
+      <div>
+        <h1>I am navigation page</h1>
+      </div>
+      <Outlet />
+    </div>
+  );
+}; */
+
+const FamilyList = () => {
+  return <h1>yawa</h1>;
+};
 
 const App = () => {
-  const [searchField, setSearchField] = useState("");
-  const [persons, setPersons] = useState([]);
-  const [filteredPersons, setFilteredPersons] = useState(persons);
-
-  //initial data api
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((users) => setPersons(users));
-  }, []);
-
-  //initial data api
-  useEffect(() => {
-    //filter the person to search
-    const newFilteredPersons = persons.filter((person) => {
-      return person.name.toLocaleLowerCase().includes(searchField);
-    });
-    setFilteredPersons(newFilteredPersons)
-  }, [persons, searchField]);
-
-  //If input is changed this will trigger
-  const onSearchChange = (event) => {
-    const searchFieldString = event.target.value.toLocaleLowerCase();
-    setSearchField(searchFieldString);
-  };
-
   return (
-    <div className="App">
-      <h1 className="app-title">Restor Family</h1>
-      <SearchBox
-        onChangeHandler={onSearchChange}
-        placeholder="Search Persons"
-        className="persons-search-box"
-      />
-      <CardList persons={filteredPersons} />
-    </div>
+    <Routes>
+      <Route path="/" element={<Navigation />}>
+        <Route index element={<Home />}></Route>
+        <Route path="familylist" element={<FamilyList />} />
+        <Route path="sign-in" element={<SignIn />} />
+      </Route>
+    </Routes>
   );
 };
 
