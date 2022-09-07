@@ -1,8 +1,22 @@
 import { Outlet, Link } from "react-router-dom";
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { ReactComponent as OnePieceLogo } from "../../../assets/one-piece-logo-75.svg";
+import { UserContext } from "../../contexts/user.context";
+
+import { signOutUser } from "../../../firebase/firebase.utils";
 import "./navigation.styles.scss";
+
+
+
 const Navigation = () => {
+
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+
+  const signOutHandler = async () => {
+    await signOutUser();
+    setCurrentUser(null);
+  
+  }
   return (
     <Fragment>
       <div className="navigation">
@@ -13,9 +27,15 @@ const Navigation = () => {
           <Link className="nav-links" to="/familylist">
             Family List
           </Link>
-          <Link className="nav-links" to="/authentication">
-            Sign-In
-          </Link>
+          {currentUser ? (
+            <span className="nav-link" onClick={signOutHandler}>
+              SIGN OUT
+            </span>
+          ) : (
+            <Link className="nav-links" to="/authentication">
+              SIGN-IN
+            </Link>
+          )}
         </div>
       </div>
       <Outlet />

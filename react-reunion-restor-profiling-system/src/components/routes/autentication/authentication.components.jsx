@@ -16,7 +16,6 @@ const Authentication = () => {
         await createUserDocumentFromAuth(response.user);
       }
     }
-
     fetchMyAPI();
   }, []);
 
